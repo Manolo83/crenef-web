@@ -9,6 +9,7 @@ const express = require('express');
 const store = require('../store');
 const { urlWhatsApp } = require('../render');
 const { avisarSolicitud } = require('../email');
+const whatsapp = require('../whatsapp');
 
 const router = express.Router();
 
@@ -63,8 +64,10 @@ router.post('/solicitudes', (req, res) => {
   }
 
   const guardada = store.agregarSolicitud(solicitud);
-  // El aviso por correo es opcional: si falla, la solicitud ya quedo guardada.
+  // Los avisos son opcionales y nunca detienen la respuesta: la solicitud ya
+  // quedo guardada y se ve en /admin aunque los dos fallen.
   avisarSolicitud(guardada).catch(() => {});
+  whatsapp.avisarSolicitud(guardada).catch(() => {});
 
   res.status(201).json({
     ok: true,

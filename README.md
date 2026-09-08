@@ -166,7 +166,47 @@ además quieres que llegue un correo al recibirlas:
    que salga desde `noreply@crenef.mx`, verifica el dominio en Resend
    (**Domains → Add Domain**) y cambia la variable.
 
-## 6. Medición para anuncios (opcional)
+## 6. Aviso automático por WhatsApp (opcional)
+
+Con el flujo normal, la solicitud llega a tu WhatsApp **desde el chat del
+paciente**: él pulsa enviar y la conversación queda abierta en su hilo, que es
+lo que sirve para darle seguimiento. Si nunca pulsa enviar, la solicitud de
+todos modos queda guardada en `/admin`.
+
+Si además quieres que **te llegue un aviso automático a tu WhatsApp** en cuanto
+alguien llena el formulario —sin depender de que el paciente lo mande—, el
+sitio ya trae el código; solo hay que darlo de alta en Meta:
+
+1. Entra a [developers.facebook.com](https://developers.facebook.com) con la
+   cuenta de negocio de la clínica y crea una app de tipo **Business** con el
+   producto **WhatsApp**.
+2. Registra un **número dedicado** para la API. Importante: **no puede ser el
+   mismo 55 1812 3770** si ese sigue usándose en la app normal de WhatsApp;
+   necesitas una segunda línea (un chip nuevo o un número virtual). Meta te da
+   uno de prueba gratis para empezar.
+3. Copia el **Phone number ID** y genera un **token permanente** (System User
+   con permiso `whatsapp_business_messaging`).
+4. Crea una **plantilla de mensaje** y espera su aprobación. Un mensaje que
+   inicia el negocio, como este aviso, tiene que ir con plantilla. Usa cuatro
+   variables, en este orden:
+
+   ```
+   Nueva solicitud de cita en el sitio de CRENEF.
+   Nombre: {{1}}
+   Teléfono: {{2}}
+   Servicio: {{3}}
+   Motivo: {{4}}
+   ```
+
+5. En Railway agrega `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_ID`, `WHATSAPP_AVISOS`
+   (tu número, 10 dígitos con lada) y `WHATSAPP_PLANTILLA` (el nombre de la
+   plantilla).
+
+Si alguna variable falta, el aviso se salta en silencio y todo lo demás sigue
+funcionando igual. Mientras tanto, la alternativa más rápida y sin trámites es
+el **aviso por correo** de la sección anterior.
+
+## 7. Medición para anuncios (opcional)
 
 Sin estas variables, el sitio **no carga nada de terceros**. Para activarlas,
 en Railway:
@@ -177,7 +217,7 @@ en Railway:
   cuentas del grupo.
 - `META_PIXEL_ID` — pixel de Facebook/Instagram.
 
-## 7. Seguridad y respaldos
+## 8. Seguridad y respaldos
 
 - Cambia `ADMIN_PASSWORD` a algo fuerte y no lo compartas fuera del equipo.
 - El panel está bloqueado para buscadores (`robots.txt` y `noindex`) y limita
@@ -189,7 +229,7 @@ en Railway:
 - Railway no respalda solo en el plan gratuito: de vez en cuando exporta la
   base (`railway connect postgres` y `pg_dump`).
 
-## 8. Pendientes de contenido
+## 9. Pendientes de contenido
 
 Cosas que hay que confirmar con la clínica antes de publicar el sitio:
 
@@ -221,6 +261,7 @@ src/
   auth.js              contraseña y sesión del panel
   uploads.js           subida y optimización de imágenes
   email.js             aviso por correo de las solicitudes (opcional)
+  whatsapp.js          aviso automático por WhatsApp Cloud API (opcional)
   routes/
     publico.js         las páginas del sitio
     api.js             solicitudes de cita

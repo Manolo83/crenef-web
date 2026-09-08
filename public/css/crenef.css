@@ -466,6 +466,11 @@ p:last-child { margin-bottom: 0; }
 .mensaje-form.ok { display: block; background: rgba(63, 163, 159, .12); color: #1F6D6A; border: 1px solid rgba(63, 163, 159, .3); }
 .mensaje-form.error { display: block; background: #FDECEC; color: #A02020; border: 1px solid #F3C9C9; }
 
+.mensaje-form.confirmacion { display: grid; gap: 10px; justify-items: start; padding: 22px; }
+.mensaje-form.confirmacion b { font-family: var(--montserrat); font-size: 1.05rem; color: var(--azul); }
+.mensaje-form.confirmacion p { margin: 0; }
+.mensaje-form.confirmacion .ayuda { font-size: .82rem; color: var(--texto-suave); }
+
 .consentimiento { display: flex; gap: 10px; align-items: flex-start; font-size: .85rem; color: var(--texto-suave); }
 .consentimiento input { width: auto; margin-top: 3px; }
 

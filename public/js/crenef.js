@@ -61,24 +61,38 @@
         if (window.fbq) window.fbq('track', 'Lead');
 
         var wa = res.cuerpo.waUrl;
-        mostrar('ok', 'Listo, ya tenemos tus datos. Abriendo WhatsApp con tus respuestas… Si no se abre solo, ' +
-          'usa el botón de abajo.');
-        if (aviso && wa) {
-          var enlace = document.createElement('a');
-          enlace.href = wa;
-          enlace.target = '_blank';
-          enlace.rel = 'noopener';
-          enlace.className = 'boton boton-primario';
-          enlace.style.marginTop = '14px';
-          enlace.textContent = 'Abrir WhatsApp';
-          aviso.appendChild(document.createElement('br'));
-          aviso.appendChild(enlace);
-        }
         form.reset();
-        // Se manda al chat en la misma pestaña: es lo que abre la app de
-        // WhatsApp de forma confiable en celular, sin que lo bloquee el
-        // navegador por venir de una respuesta asincrona.
-        if (wa) setTimeout(function () { window.location.href = wa; }, 900);
+
+        // Se sustituye el formulario por la confirmacion, para que quede
+        // claro que falta un paso: pulsar "enviar" dentro de WhatsApp.
+        if (aviso) {
+          aviso.className = 'mensaje-form ok confirmacion';
+          aviso.innerHTML = '';
+          var titulo = document.createElement('b');
+          titulo.textContent = 'Ya tenemos tus datos.';
+          var texto = document.createElement('p');
+          texto.textContent = 'Falta un paso: estamos abriendo WhatsApp con tus respuestas ya escritas. ' +
+            'Solo pulsa enviar dentro de la aplicación y nos llega tu solicitud.';
+          aviso.appendChild(titulo);
+          aviso.appendChild(texto);
+          if (wa) {
+            var enlace = document.createElement('a');
+            enlace.href = wa;
+            enlace.className = 'boton boton-primario';
+            enlace.textContent = 'Abrir WhatsApp y enviar';
+            aviso.appendChild(enlace);
+            var nota = document.createElement('span');
+            nota.className = 'ayuda';
+            nota.textContent = 'Si no se abre solo, pulsa el botón.';
+            aviso.appendChild(nota);
+          }
+          aviso.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+
+        // Se navega en la misma pestaña: es lo que abre la app de WhatsApp de
+        // forma confiable en celular, sin que el navegador lo bloquee por
+        // venir de una respuesta asincrona.
+        if (wa) setTimeout(function () { window.location.href = wa; }, 1200);
       })
       .catch(function (err) {
         mostrar('error', err.message + ' Vuelve a intentarlo en un momento.');
