@@ -154,7 +154,11 @@ let servidor;
 store
   .init()
   .then(() => {
-    servidor = app.listen(PORT, () => console.log(`CRENEF escuchando en el puerto ${PORT}`));
+    servidor = app.listen(PORT, () =>
+      console.log(
+        `CRENEF escuchando en el puerto ${PORT} · modo ${EN_PRODUCCION ? 'produccion' : 'desarrollo'} · contenido en ${process.env.DATABASE_URL ? 'PostgreSQL' : 'archivo local'}`
+      )
+    );
   })
   .catch((err) => {
     console.error('No se pudo inicializar el contenido, el servidor no arranco:', err.message);
