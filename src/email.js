@@ -22,8 +22,12 @@ async function avisarSolicitud(solicitud) {
     ['Nombre', solicitud.nombre],
     ['Teléfono', solicitud.telefono],
     ['Correo', solicitud.correo],
+    ['La cita es', solicitud.para_quien],
     ['Servicio de interés', solicitud.servicio],
-    ['Mensaje', solicitud.mensaje],
+    ['Motivo', solicitud.motivo],
+    ['Desde cuándo', solicitud.desde_cuando],
+    ['Estudios previos', solicitud.estudios],
+    ['Horario que le acomoda', solicitud.preferencia],
   ]
     .filter(([, v]) => v)
     .map(([k, v]) => `<tr><td style="padding:6px 12px 6px 0;color:#5E7385;font-size:13px;">${escapar(k)}</td><td style="padding:6px 0;color:#2B3B4A;font-size:14px;">${escapar(v)}</td></tr>`)

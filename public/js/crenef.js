@@ -37,6 +37,14 @@
       mostrar('error', 'Necesitamos tu nombre y un teléfono para poder contactarte.');
       return;
     }
+    if (!datos.motivo) {
+      mostrar('error', 'Cuéntanos brevemente qué te está pasando.');
+      return;
+    }
+    if (!datos.consentimiento) {
+      mostrar('error', 'Necesitamos tu autorización para usar tus datos y poder contactarte.');
+      return;
+    }
 
     if (enviar) { enviar.disabled = true; enviar.textContent = 'Enviando…'; }
 
@@ -48,13 +56,32 @@
       .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, cuerpo: j }; }); })
       .then(function (res) {
         if (!res.ok) throw new Error(res.cuerpo.error || 'No se pudo enviar la solicitud.');
-        form.reset();
-        mostrar('ok', 'Listo, recibimos tu solicitud. Te contactamos en horario de clínica (martes a domingo, 9:00 a 21:00 h). Si prefieres respuesta inmediata, escríbenos por WhatsApp.');
-        if (window.gtag) window.gtag('event', 'generate_lead', { method: 'formulario' });
+
+        if (window.gtag) window.gtag('event', 'generate_lead', { method: 'formulario de agenda' });
         if (window.fbq) window.fbq('track', 'Lead');
+
+        var wa = res.cuerpo.waUrl;
+        mostrar('ok', 'Listo, ya tenemos tus datos. Abriendo WhatsApp con tus respuestas… Si no se abre solo, ' +
+          'usa el botón de abajo.');
+        if (aviso && wa) {
+          var enlace = document.createElement('a');
+          enlace.href = wa;
+          enlace.target = '_blank';
+          enlace.rel = 'noopener';
+          enlace.className = 'boton boton-primario';
+          enlace.style.marginTop = '14px';
+          enlace.textContent = 'Abrir WhatsApp';
+          aviso.appendChild(document.createElement('br'));
+          aviso.appendChild(enlace);
+        }
+        form.reset();
+        // Se manda al chat en la misma pestaña: es lo que abre la app de
+        // WhatsApp de forma confiable en celular, sin que lo bloquee el
+        // navegador por venir de una respuesta asincrona.
+        if (wa) setTimeout(function () { window.location.href = wa; }, 900);
       })
       .catch(function (err) {
-        mostrar('error', err.message + ' También puedes escribirnos directo por WhatsApp.');
+        mostrar('error', err.message + ' Vuelve a intentarlo en un momento.');
       })
       .then(function () {
         if (enviar) { enviar.disabled = false; enviar.textContent = textoOriginal; }

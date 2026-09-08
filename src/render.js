@@ -116,7 +116,6 @@ function render(pagina, opciones = {}) {
     sitio_url: SITE_URL,
     anio: String(new Date().getFullYear()),
     wa_url: urlWhatsApp(contenido),
-    wa_url_servicios: urlWhatsApp(contenido, 'Hola, quiero información sobre los servicios de CRENEF.'),
     medicion: medicion(),
     menu_escritorio: menu(ruta, 'nav-enlace'),
     menu_movil: menu(ruta, 'menu-movil-enlace'),

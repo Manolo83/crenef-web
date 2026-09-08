@@ -322,6 +322,25 @@
 
   // --- Solicitudes de cita -----------------------------------------------
 
+  var CAMPOS_SOLICITUD = [
+    ['telefono', 'Teléfono'],
+    ['correo', 'Correo'],
+    ['para_quien', 'La cita es'],
+    ['servicio', 'Servicio'],
+    ['motivo', 'Motivo'],
+    ['mensaje', 'Mensaje'],
+    ['desde_cuando', 'Desde cuándo'],
+    ['estudios', 'Estudios previos'],
+    ['preferencia', 'Horario que le acomoda'],
+  ];
+
+  function detalle(s) {
+    return CAMPOS_SOLICITUD
+      .filter(function (c) { return s[c[0]]; })
+      .map(function (c) { return '<b>' + esc(c[1]) + ':</b> ' + esc(s[c[0]]); })
+      .join('<br>');
+  }
+
   function pintarSolicitudes() {
     var lista = datos.solicitudes || [];
     var pendientes = lista.filter(function (s) { return !s.atendida; }).length;
@@ -343,10 +362,7 @@
           '<button class="btn-linea btn-chico" data-atender="' + esc(s.id) + '">' + (s.atendida ? 'Marcar pendiente' : 'Marcar atendida') + '</button>' +
           '<button class="btn-borrar btn-chico" data-borrar="' + esc(s.id) + '">Borrar</button>' +
           '</div></div>' +
-          '<p style="margin:14px 0 0;font-size:.92rem"><b>Teléfono:</b> ' + esc(s.telefono) +
-          (s.correo ? ' · <b>Correo:</b> ' + esc(s.correo) : '') +
-          (s.servicio ? '<br><b>Servicio:</b> ' + esc(s.servicio) : '') +
-          (s.mensaje ? '<br><b>Mensaje:</b> ' + esc(s.mensaje) : '') + '</p></div>';
+          '<p style="margin:14px 0 0;font-size:.92rem">' + detalle(s) + '</p></div>';
       }).join('');
     }
     var panel = $('#panel-solicitudes');

@@ -128,10 +128,10 @@ function enlacesPieServicios() {
     .join('\n');
 }
 
-function opcionesServicio() {
+function opcionesServicio(slugElegido) {
   return store
     .getServicios()
-    .map((s) => `<option value="${escapar(s.nombre)}">${escapar(s.nombre)}</option>`)
+    .map((s) => `<option value="${escapar(s.nombre)}"${s.slug === slugElegido ? ' selected' : ''}>${escapar(s.nombre)}</option>`)
     .join('\n');
 }
 
@@ -148,6 +148,81 @@ function faqsEstructuradas() {
     })),
   };
   return `<script type="application/ld+json">${JSON.stringify(ficha).replace(/</g, '\\u003c')}</script>`;
+}
+
+// Formulario de agenda. Es el paso previo obligatorio antes de WhatsApp: con
+// estas respuestas la clinica ya sabe que necesita la persona cuando abre el
+// chat, y la solicitud queda guardada en /admin aunque nunca llegue a enviar
+// el mensaje.
+const OPCIONES = {
+  para_quien: ['Para mí', 'Para un familiar o alguien a mi cargo'],
+  desde_cuando: ['Menos de una semana', 'Entre una semana y un mes', 'Entre uno y seis meses', 'Más de seis meses', 'Es una revisión o control'],
+  estudios: ['No tengo estudios ni diagnóstico', 'Sí, tengo estudios o diagnóstico previos', 'Un médico me canalizó', 'No estoy seguro'],
+  preferencia: ['Entre semana por la mañana', 'Entre semana por la tarde', 'Fin de semana', 'Cualquier horario me funciona'],
+};
+
+const selector = (nombre, etiqueta, opciones, vacio) => {
+  const items = [vacio ? `<option value="">${escapar(vacio)}</option>` : '']
+    .concat(opciones.map((o) => `<option value="${escapar(o)}">${escapar(o)}</option>`))
+    .join('');
+  return `<div class="campo"><label for="${nombre}">${escapar(etiqueta)}</label><select id="${nombre}" name="${nombre}">${items}</select></div>`;
+};
+
+function formularioAgenda(slugElegido) {
+  return `<form class="formulario" id="form-cita" novalidate>
+  <div class="campo-doble">
+    <div class="campo">
+      <label for="nombre">Nombre completo *</label>
+      <input type="text" id="nombre" name="nombre" autocomplete="name" required>
+    </div>
+    <div class="campo">
+      <label for="telefono">Teléfono o WhatsApp *</label>
+      <input type="tel" id="telefono" name="telefono" autocomplete="tel" inputmode="tel" required>
+    </div>
+  </div>
+
+  <div class="campo-doble">
+    <div class="campo">
+      <label for="correo">Correo electrónico</label>
+      <input type="email" id="correo" name="correo" autocomplete="email">
+    </div>
+    ${selector('para_quien', '¿Para quién es la cita?', OPCIONES.para_quien)}
+  </div>
+
+  <div class="campo">
+    <label for="servicio">¿Qué servicio necesitas?</label>
+    <select id="servicio" name="servicio">
+      <option value=""${slugElegido ? '' : ' selected'}>No estoy seguro, quiero orientación</option>
+      ${opcionesServicio(slugElegido)}
+    </select>
+    <span class="ayuda">Si no sabes cuál, déjalo en «no estoy seguro»: el especialista lo define en la valoración.</span>
+  </div>
+
+  <div class="campo">
+    <label for="motivo">¿Qué te está pasando? *</label>
+    <textarea id="motivo" name="motivo" placeholder="Por ejemplo: me falta el aire al subir escaleras y me canso más rápido que antes." required></textarea>
+    <span class="ayuda">Con dos o tres renglones basta. Lo demás lo revisamos en consulta.</span>
+  </div>
+
+  <div class="campo-doble">
+    ${selector('desde_cuando', '¿Desde cuándo?', OPCIONES.desde_cuando, 'Selecciona una opción')}
+    ${selector('estudios', '¿Tienes estudios o diagnóstico previos?', OPCIONES.estudios, 'Selecciona una opción')}
+  </div>
+
+  ${selector('preferencia', '¿Cuándo te queda mejor venir?', OPCIONES.preferencia, 'Selecciona una opción')}
+
+  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+
+  <label class="consentimiento">
+    <input type="checkbox" name="consentimiento" required>
+    <span>Acepto que CRENEF use mis datos para contactarme y agendar mi cita, conforme al <a href="/aviso-de-privacidad">aviso de privacidad</a>. *</span>
+  </label>
+
+  <div class="mensaje-form" id="mensaje-form" role="status" aria-live="polite"></div>
+
+  <button class="boton boton-primario" type="submit">Enviar y abrir WhatsApp</button>
+  <p class="ayuda" style="margin:0">Al enviar se abre el chat de la clínica con tus respuestas ya escritas. No tienes que repetir nada.</p>
+</form>`;
 }
 
 function migas(items) {
@@ -169,5 +244,6 @@ module.exports = {
   enlacesPieServicios,
   opcionesServicio,
   faqsEstructuradas,
+  formularioAgenda,
   migas,
 };

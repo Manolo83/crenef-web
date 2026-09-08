@@ -21,12 +21,29 @@ sección con su propia dirección:
 | `/nosotros` | La clínica, los valores y a quién acompañamos |
 | `/preguntas-frecuentes` | Todas las preguntas |
 | `/ubicacion` | Dirección, horario y mapa |
-| `/contacto` | Formulario de solicitud de cita + datos directos |
+| `/agenda` | **El formulario previo a WhatsApp.** También responde `/cita` |
+| `/contacto` | El mismo formulario + datos directos y mapa |
 | `/aviso-de-privacidad` | Legal |
-| `/agenda` | Atajo que **redirige directo al WhatsApp** de la clínica (útil para anuncios, códigos QR y la lona). También responden `/cita` y `/whatsapp` |
+| `/whatsapp` | Atajo directo al chat, **sin** formulario. No se enlaza desde el sitio: es para tarjetas impresas, firma de correo y códigos QR del consultorio |
 
-Todos los botones de «Agendar» del sitio abren el chat de WhatsApp con el
-mensaje ya escrito, y hay un botón flotante de WhatsApp en todas las páginas.
+### Cómo funciona el botón de WhatsApp
+
+Todos los botones de «Agendar» del sitio —incluido el flotante— llevan a
+`/agenda`, no directo al chat. Ahí la persona contesta unas preguntas cortas
+(qué necesita, qué le está pasando, desde cuándo, si tiene estudios previos y
+qué horario le acomoda) y al enviar pasan dos cosas:
+
+1. La solicitud **queda guardada** en `/admin`, aunque nunca llegue a mandar el
+   mensaje.
+2. Se abre WhatsApp con **todas sus respuestas ya redactadas**, así que la
+   clínica sabe qué necesita desde el primer mensaje y puede dar atención
+   personalizada sin tener que preguntar lo básico.
+
+Desde la página de un servicio, el botón lleva a `/agenda?servicio=<slug>` y el
+formulario llega con ese servicio ya elegido.
+
+El WhatsApp de la clínica es el **55 1812 3770**. Se cambia desde
+`/admin → Textos del sitio → Contacto`, sin tocar código.
 
 **Panel de administración** (`/admin`, protegido con contraseña):
 
@@ -37,7 +54,7 @@ mensaje ya escrito, y hay un botón flotante de WhatsApp en todas las páginas.
 - **Áreas**: las tres agrupaciones (inhaloterapia, fisioterapia, cuidado
   personal).
 - **Preguntas frecuentes**, **valores** y **padecimientos**.
-- **Solicitudes de cita**: lo que llega por el formulario, con botón para
+- **Solicitudes de cita**: todas las respuestas del formulario, con botón para
   contestar por WhatsApp y marcar como atendida.
 
 **Backend** en Node.js + Express. Las páginas se arman en el servidor, así que

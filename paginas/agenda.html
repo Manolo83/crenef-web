@@ -1,0 +1,34 @@
+<header class="cabecera-pagina">
+  <div class="contenedor">
+    <span class="kicker">Agenda tu cita</span>
+    <h1>Cuéntanos qué necesitas</h1>
+    <p>Son unas cuantas preguntas, menos de un minuto. Con tus respuestas llegamos preparados al chat: sabemos qué te pasa, qué servicio te corresponde y qué horario te acomoda, para darte una atención personalizada desde el primer mensaje.</p>
+  </div>
+</header>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="rejilla rejilla-2" style="gap:52px;align-items:start">
+      <div>
+        {{{formulario}}}
+      </div>
+
+      <aside>
+        <div class="tarjeta">
+          <h3>Qué pasa después</h3>
+          <ol class="pasos-agenda">
+            <li><b>Se abre WhatsApp</b> con tus respuestas ya escritas. Solo pulsas enviar.</li>
+            <li><b>Revisamos disponibilidad</b> y te proponemos fecha y hora dentro del horario de clínica.</li>
+            <li><b>Llegas a tu valoración</b> y el especialista define tu plan de tratamiento.</li>
+          </ol>
+          <ul class="datos-contacto" style="margin-top:24px">
+            <li>{{{icono_reloj}}}<div><strong>Horario</strong><span>{{contacto_horario}}</span></div></li>
+            <li>{{{icono_pin}}}<div><strong>Dónde</strong><span>{{contacto_direccion_1}}<br>{{contacto_direccion_2}}</span></div></li>
+            <li>{{{icono_wa}}}<div><strong>WhatsApp</strong><span>{{contacto_whatsapp_visible}}</span></div></li>
+          </ul>
+        </div>
+        <p class="aviso-tarifa">{{legal_aviso_medico}}</p>
+      </aside>
+    </div>
+  </div>
+</section>

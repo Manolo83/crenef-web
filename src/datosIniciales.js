@@ -73,8 +73,8 @@ const CONTENIDO = {
   cta_boton: 'Escribir por WhatsApp',
 
   // --- Contacto ----------------------------------------------------------
-  contacto_whatsapp: '5527703927',
-  contacto_whatsapp_visible: '55 2770 3927',
+  contacto_whatsapp: '5518123770',
+  contacto_whatsapp_visible: '55 1812 3770',
   contacto_whatsapp_mensaje: 'Hola, me gustaría agendar una valoración en CRENEF.',
   contacto_telefono: '',
   contacto_correo: 'contacto@crenef.mx',
@@ -308,7 +308,7 @@ const FAQS = [
   {
     pregunta: '¿Necesito cita para ser atendido?',
     respuesta:
-      'Sí. Agendamos por WhatsApp al 55 2770 3927, de martes a domingo de 9:00 a 21:00 h. Nos escribes, revisamos disponibilidad y apartamos tu lugar.',
+      'Sí. Llena el formulario de agenda del sitio: son unas cuantas preguntas para saber qué necesitas. Al enviarlo se abre el chat de WhatsApp (55 1812 3770) con tus datos ya escritos, y desde ahí confirmamos disponibilidad. Atendemos de martes a domingo, de 9:00 a 21:00 h.',
     orden: 1,
   },
   {

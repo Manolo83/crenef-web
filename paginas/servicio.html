@@ -10,8 +10,8 @@
       {{{servicio_nota}}}
     </p>
     <div class="grupo-botones" style="margin-top:26px">
-      <a class="boton boton-primario" href="{{wa_url_servicio}}" target="_blank" rel="noopener" data-evento="agenda-servicio">Agendar por WhatsApp</a>
-      <a class="boton boton-linea" href="/contacto">Dejar mis datos</a>
+      <a class="boton boton-primario" href="{{ruta_agenda}}" data-evento="agenda-servicio">Agendar este servicio</a>
+      <a class="boton boton-linea" href="/servicios">Ver todos los servicios</a>
     </div>
   </div>
 </header>
@@ -31,7 +31,7 @@
           <ul class="datos-contacto" style="margin-top:22px">
             <li>{{{icono_reloj}}}<div><strong>Horario</strong><span>{{contacto_horario}}</span></div></li>
             <li>{{{icono_pin}}}<div><strong>Dónde</strong><span>{{contacto_direccion_1}}<br>{{contacto_direccion_2}}</span></div></li>
-            <li>{{{icono_wa}}}<div><strong>WhatsApp</strong><a href="{{wa_url_servicio}}" target="_blank" rel="noopener">{{contacto_whatsapp_visible}}</a></div></li>
+            <li>{{{icono_wa}}}<div><strong>WhatsApp</strong><span>{{contacto_whatsapp_visible}}</span></div></li>
           </ul>
         </div>
         <p class="aviso-tarifa">{{tarifario_vigencia}}. {{tarifario_nota}}</p>

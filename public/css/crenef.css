@@ -469,6 +469,36 @@ p:last-child { margin-bottom: 0; }
 .consentimiento { display: flex; gap: 10px; align-items: flex-start; font-size: .85rem; color: var(--texto-suave); }
 .consentimiento input { width: auto; margin-top: 3px; }
 
+/* --- Pasos de la pagina de agenda ---------------------------------------- */
+
+.pasos-agenda { list-style: none; counter-reset: paso; margin: 0; padding: 0; }
+.pasos-agenda li {
+  counter-increment: paso;
+  position: relative;
+  padding-left: 40px;
+  margin-bottom: 16px;
+  font-size: .93rem;
+  color: var(--texto-suave);
+}
+.pasos-agenda li:last-child { margin-bottom: 0; }
+.pasos-agenda li b { color: var(--azul); font-family: var(--montserrat); font-weight: 600; }
+.pasos-agenda li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 0;
+  top: -1px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(63, 163, 159, .14);
+  color: var(--teal);
+  font-family: var(--montserrat);
+  font-weight: 700;
+  font-size: .8rem;
+  display: grid;
+  place-items: center;
+}
+
 /* --- Tarjeta de contacto ------------------------------------------------- */
 
 .datos-contacto { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; }

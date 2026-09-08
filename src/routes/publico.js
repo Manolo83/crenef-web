@@ -59,7 +59,6 @@ router.get('/servicios/:slug', (req, res, next) => {
   if (!servicio) return next();
 
   const area = store.getArea(servicio.area) || { nombre: 'Servicios', slug: '' };
-  const contenido = store.getContenido();
   const relacionados = store
     .getServiciosDeArea(servicio.area)
     .filter((s) => s.slug !== servicio.slug)
@@ -97,7 +96,7 @@ router.get('/servicios/:slug', (req, res, next) => {
         servicio_descripcion: parrafos(servicio.descripcion),
         servicio_bullets: bullets,
         relacionados,
-        wa_url_servicio: urlWhatsApp(contenido, `Hola, quiero agendar: ${servicio.nombre}.`),
+        ruta_agenda: `/agenda?servicio=${encodeURIComponent(servicio.slug)}`,
       },
     })
   );
@@ -166,7 +165,7 @@ router.get('/contacto', (req, res) => {
         descripcion: 'Agenda tu valoración en CRENEF por WhatsApp o déjanos tus datos y te contactamos.',
         ruta: '/contacto',
       },
-      bloques: { opciones_servicio: bloques.opcionesServicio() },
+      bloques: { formulario: bloques.formularioAgenda() },
     })
   );
 });
@@ -191,11 +190,32 @@ router.get('/aviso-de-privacidad', (req, res) => {
   );
 });
 
-// --- Atajo a WhatsApp ----------------------------------------------------
-// Sirve para anuncios, codigos QR y la lona: /agenda manda directo al chat.
-router.get(['/agenda', '/whatsapp', '/cita'], (req, res) => {
-  const contenido = store.getContenido();
-  res.redirect(302, urlWhatsApp(contenido));
+// --- Agenda --------------------------------------------------------------
+// Paso previo obligatorio antes de WhatsApp: el visitante contesta unas
+// preguntas, la solicitud queda guardada y el chat se abre con sus respuestas
+// ya escritas. Todos los botones de agendar del sitio llegan aqui.
+// Con ?servicio=<slug> el formulario llega con ese servicio ya elegido.
+router.get(['/agenda', '/cita'], (req, res) => {
+  const elegido = store.getServicio(String(req.query.servicio || '')) ? String(req.query.servicio) : '';
+  enviar(
+    res,
+    render('agenda', {
+      meta: {
+        titulo: 'Agenda tu cita · CRENEF',
+        descripcion:
+          'Cuéntanos qué necesitas y agendamos tu valoración en CRENEF. Al enviar el formulario se abre WhatsApp con tus respuestas ya escritas.',
+        ruta: '/agenda',
+      },
+      bloques: { formulario: bloques.formularioAgenda(elegido) },
+    })
+  );
+});
+
+// Atajo directo al chat, sin formulario. No se enlaza desde el sitio: existe
+// para usos internos (tarjetas impresas, firma de correo, codigos QR del
+// consultorio) donde el paciente ya esta en contacto con la clinica.
+router.get('/whatsapp', (req, res) => {
+  res.redirect(302, urlWhatsApp(store.getContenido()));
 });
 
 module.exports = router;
