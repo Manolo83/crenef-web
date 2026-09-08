@@ -344,8 +344,11 @@
   function pintarSolicitudes() {
     var lista = datos.solicitudes || [];
     var pendientes = lista.filter(function (s) { return !s.atendida; }).length;
-    var html = '<h2>Solicitudes de cita</h2><p class="nota">Las que llegan por el formulario de /contacto. ' +
-      (pendientes ? '<b>' + pendientes + ' sin atender.</b>' : 'Todas atendidas.') + '</p>';
+    var sinChat = lista.filter(function (s) { return !s.whatsapp; }).length;
+    var html = '<h2>Solicitudes de cita</h2><p class="nota">Todas las que llegan por el formulario del sitio quedan aquí, ' +
+      'hayan pasado o no por WhatsApp. ' +
+      (pendientes ? '<b>' + pendientes + ' sin atender.</b>' : 'Todas atendidas.') +
+      (sinChat ? ' <b style="color:#B32020">' + sinChat + ' no llegaron al chat: conviene marcarles tú.</b>' : '') + '</p>';
 
     if (!lista.length) {
       html += '<div class="tarjeta"><p style="margin:0;color:var(--suave)">Todavía no hay solicitudes.</p></div>';
@@ -355,6 +358,9 @@
         var tel = String(s.telefono || '').replace(/\D/g, '');
         return '<div class="tarjeta"><div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center">' +
           '<div><b style="font-family:Montserrat,sans-serif;color:var(--azul)">' + esc(s.nombre) + '</b> ' +
+          (s.whatsapp
+            ? '<span class="pildora verde">● Formulario enviado por WhatsApp</span>'
+            : '<span class="pildora roja">● No llegó al chat de WhatsApp</span>') + ' ' +
           (s.atendida ? '<span class="pildora">Atendida</span>' : '<span class="pildora nueva">Nueva</span>') +
           '<small style="display:block;color:var(--suave)">' + esc(fecha) + '</small></div>' +
           '<div class="acciones">' +

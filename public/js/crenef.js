@@ -61,7 +61,19 @@
         if (window.fbq) window.fbq('track', 'Lead');
 
         var wa = res.cuerpo.waUrl;
+        var id = res.cuerpo.id;
         form.reset();
+
+        // Avisa al servidor que esta persona si llego al chat. Se usa
+        // sendBeacon porque el navegador esta a punto de salir de la pagina:
+        // un fetch normal se cancelaria a medio camino.
+        function marcarQueAbrioWhatsApp() {
+          if (!id) return;
+          try {
+            if (navigator.sendBeacon) navigator.sendBeacon('/api/solicitudes/' + id + '/whatsapp');
+            else fetch('/api/solicitudes/' + id + '/whatsapp', { method: 'POST', keepalive: true });
+          } catch (err) { /* si falla, la solicitud igual quedo guardada */ }
+        }
 
         // Se sustituye el formulario por la confirmacion, para que quede
         // claro que falta un paso: pulsar "enviar" dentro de WhatsApp.
@@ -80,6 +92,7 @@
             enlace.href = wa;
             enlace.className = 'boton boton-primario';
             enlace.textContent = 'Abrir WhatsApp y enviar';
+            enlace.addEventListener('click', marcarQueAbrioWhatsApp);
             aviso.appendChild(enlace);
             var nota = document.createElement('span');
             nota.className = 'ayuda';
@@ -92,7 +105,10 @@
         // Se navega en la misma pestaña: es lo que abre la app de WhatsApp de
         // forma confiable en celular, sin que el navegador lo bloquee por
         // venir de una respuesta asincrona.
-        if (wa) setTimeout(function () { window.location.href = wa; }, 1200);
+        if (wa) setTimeout(function () {
+          marcarQueAbrioWhatsApp();
+          window.location.href = wa;
+        }, 1200);
       })
       .catch(function (err) {
         mostrar('error', err.message + ' Vuelve a intentarlo en un momento.');

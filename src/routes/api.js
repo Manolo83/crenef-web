@@ -76,4 +76,15 @@ router.post('/solicitudes', (req, res) => {
   });
 });
 
+// Aviso de que el navegador de la persona alcanzo a abrir el chat de
+// WhatsApp. Lo manda el propio sitio con sendBeacon justo antes de salir, asi
+// que en /admin se distingue a quien llego al chat de quien lleno el
+// formulario y se fue. El id es un UUID que solo conoce quien acaba de enviar
+// el formulario.
+router.post('/solicitudes/:id/whatsapp', (req, res) => {
+  const marcada = store.marcarWhatsapp(req.params.id);
+  if (!marcada) return res.status(404).json({ error: 'No se encontró esa solicitud.' });
+  res.json({ ok: true });
+});
+
 module.exports = router;

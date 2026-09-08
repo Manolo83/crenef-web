@@ -55,7 +55,18 @@ El WhatsApp de la clínica es el **55 1812 3770**. Se cambia desde
   personal).
 - **Preguntas frecuentes**, **valores** y **padecimientos**.
 - **Solicitudes de cita**: todas las respuestas del formulario, con botón para
-  contestar por WhatsApp y marcar como atendida.
+  contestar por WhatsApp y marcar como atendida. Cada una trae un indicador:
+
+  | | Qué significa |
+  |---|---|
+  | 🟢 **Formulario enviado por WhatsApp** | La persona llegó al chat con sus respuestas ya escritas |
+  | 🔴 **No llegó al chat de WhatsApp** | Llenó el formulario pero se salió antes de abrir WhatsApp — a esa persona conviene marcarle tú |
+
+  El resumen de arriba cuenta cuántas están en rojo. Ojo con el alcance del
+  indicador: el sitio detecta que el chat se abrió, no si la persona alcanzó a
+  pulsar «enviar» dentro de WhatsApp — eso pasa dentro de la aplicación y
+  ningún sitio web puede verlo. En verde, si no te llegó el mensaje, es que se
+  arrepintió en el último paso; el teléfono ya lo tienes de todos modos.
 
 **Backend** en Node.js + Express. Las páginas se arman en el servidor, así que
 el visitante y Google reciben el HTML completo desde la primera respuesta

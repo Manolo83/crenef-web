@@ -178,6 +178,11 @@ function agregarSolicitud(solicitud) {
     id: crypto.randomUUID(),
     fecha: new Date().toISOString(),
     atendida: false,
+    // Se marca en true cuando el navegador de la persona alcanza a abrir el
+    // chat de WhatsApp (ver marcarWhatsapp). Sirve para distinguir en /admin
+    // a quien llego al chat de quien lleno el formulario y se fue.
+    whatsapp: false,
+    whatsappFecha: '',
     ...solicitud,
   };
   datos.solicitudes.push(nueva);
@@ -186,6 +191,16 @@ function agregarSolicitud(solicitud) {
   if (datos.solicitudes.length > 1000) datos.solicitudes = datos.solicitudes.slice(-1000);
   guardar();
   return nueva;
+}
+
+// La llama el propio sitio justo antes de mandar a la persona al chat.
+function marcarWhatsapp(id) {
+  const s = datos.solicitudes.find((x) => x.id === id);
+  if (!s || s.whatsapp) return s || null;
+  s.whatsapp = true;
+  s.whatsappFecha = new Date().toISOString();
+  guardar();
+  return s;
 }
 
 function marcarSolicitud(id, atendida) {
@@ -224,6 +239,7 @@ module.exports = {
   guardarItem,
   borrarItem,
   agregarSolicitud,
+  marcarWhatsapp,
   marcarSolicitud,
   borrarSolicitud,
   COLECCIONES,
