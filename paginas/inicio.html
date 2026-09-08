@@ -1,0 +1,128 @@
+<section class="hero">
+  <div class="contenedor hero-inner">
+    <div>
+      <span class="hero-kicker">{{hero_kicker}}</span>
+      <h1>{{hero_titulo}}</h1>
+      <p class="hero-texto">{{hero_texto}}</p>
+      <div class="grupo-botones">
+        <a class="boton boton-claro" href="{{wa_url}}" target="_blank" rel="noopener" data-evento="agenda-hero">{{hero_cta_principal}}</a>
+        <a class="boton boton-linea-clara" href="/servicios">{{hero_cta_secundario}}</a>
+      </div>
+      <p class="hero-nota">{{contacto_direccion_1}} · {{contacto_horario}}</p>
+    </div>
+    <div class="hero-marca">
+      <img src="/img/logo-crenef-negativo.png" alt="CRENEF · Clínica de Rehabilitación Neumofisio" width="320">
+    </div>
+  </div>
+</section>
+
+<div class="confianza">
+  {{{confianza}}}
+</div>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="encabezado-seccion">
+      <span class="kicker">{{servicios_kicker}}</span>
+      <h2>{{servicios_titulo}}</h2>
+      <p>{{servicios_texto}}</p>
+    </div>
+    <div class="rejilla rejilla-3">
+      {{{areas}}}
+    </div>
+    <p class="aviso-tarifa">{{tarifario_vigencia}}. {{tarifario_nota}}</p>
+  </div>
+</section>
+
+<section class="seccion seccion-niebla">
+  <div class="contenedor">
+    <div class="encabezado-seccion centrado">
+      <span class="kicker">{{proceso_kicker}}</span>
+      <h2>{{proceso_titulo}}</h2>
+      <p>{{proceso_texto}}</p>
+    </div>
+    <div class="rejilla rejilla-4">
+      {{{pasos}}}
+    </div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="encabezado-seccion">
+      <span class="kicker">{{padecimientos_kicker}}</span>
+      <h2>{{padecimientos_titulo}}</h2>
+      <p>{{padecimientos_texto}}</p>
+    </div>
+    <div class="rejilla rejilla-3">
+      {{{padecimientos}}}
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion-azul">
+  <div class="contenedor">
+    <div class="rejilla rejilla-2" style="align-items:center;gap:48px">
+      <div>
+        <span class="kicker">{{nosotros_kicker}}</span>
+        <h2>{{nosotros_titulo}}</h2>
+        <p>{{nosotros_texto}}</p>
+        <p>{{nosotros_esencia}}</p>
+        <div class="grupo-botones" style="margin-top:26px">
+          <a class="boton boton-claro" href="/nosotros">Conoce la clínica</a>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <img src="/img/isotipo-crenef-blanco.png" alt="" width="260" style="margin:0 auto;opacity:.95">
+        <p style="margin-top:22px;font-family:var(--montserrat);letter-spacing:.14em;text-transform:uppercase;font-size:.78rem;color:var(--teal-claro)">{{marca_lema}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="rejilla rejilla-2" style="gap:48px;align-items:center">
+      <div>
+        <span class="kicker">Dónde estamos</span>
+        <h2>En Coyoacán, sobre División del Norte</h2>
+        <ul class="datos-contacto" style="margin-top:26px">
+          <li>{{{icono_pin}}}<div><strong>Dirección</strong><span>{{contacto_direccion_1}}<br>{{contacto_direccion_2}}</span></div></li>
+          <li>{{{icono_reloj}}}<div><strong>Horario</strong><span>{{contacto_horario}}</span></div></li>
+          <li>{{{icono_wa}}}<div><strong>WhatsApp</strong><a href="{{wa_url}}" target="_blank" rel="noopener">{{contacto_whatsapp_visible}}</a></div></li>
+        </ul>
+        <div class="grupo-botones" style="margin-top:28px">
+          <a class="boton boton-linea" href="{{contacto_maps_url}}" target="_blank" rel="noopener">Cómo llegar</a>
+          <a class="boton boton-primario" href="{{wa_url}}" target="_blank" rel="noopener">Agendar cita</a>
+        </div>
+      </div>
+      <div class="mapa">
+        <iframe src="{{contacto_maps_embed}}" title="Ubicación de CRENEF en el mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion-niebla">
+  <div class="contenedor contenedor-angosto">
+    <div class="encabezado-seccion centrado">
+      <span class="kicker">Dudas comunes</span>
+      <h2>Preguntas frecuentes</h2>
+    </div>
+    <div class="faq">
+      {{{faqs}}}
+    </div>
+    <p class="texto-centrado" style="margin-top:26px"><a href="/preguntas-frecuentes">Ver todas las preguntas →</a></p>
+  </div>
+</section>
+
+<section class="seccion seccion-degradado cta-final">
+  <div class="contenedor">
+    <h2>{{cta_titulo}}</h2>
+    <p>{{cta_texto}}</p>
+    <div class="grupo-botones">
+      <a class="boton boton-claro" href="{{wa_url}}" target="_blank" rel="noopener" data-evento="agenda-cta">{{cta_boton}}</a>
+      <a class="boton boton-linea-clara" href="/contacto">Dejar mis datos</a>
+    </div>
+  </div>
+</section>

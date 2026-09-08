@@ -1,0 +1,51 @@
+{{{migas}}}
+
+<header class="cabecera-pagina" style="background:#fff;border-bottom:0;padding-top:24px">
+  <div class="contenedor">
+    <span class="kicker">{{area_nombre}}</span>
+    <h1>{{servicio_nombre}}</h1>
+    <p>{{servicio_resumen}}</p>
+    <p style="margin-top:20px">
+      <span class="etiqueta-vigencia" style="background:var(--azul);color:#fff;font-size:.95rem;padding:9px 20px">{{servicio_precio}} MXN</span>
+      {{{servicio_nota}}}
+    </p>
+    <div class="grupo-botones" style="margin-top:26px">
+      <a class="boton boton-primario" href="{{wa_url_servicio}}" target="_blank" rel="noopener" data-evento="agenda-servicio">Agendar por WhatsApp</a>
+      <a class="boton boton-linea" href="/contacto">Dejar mis datos</a>
+    </div>
+  </div>
+</header>
+
+<section class="seccion-compacta">
+  <div class="contenedor">
+    <div class="rejilla rejilla-2" style="gap:48px;align-items:start">
+      <div>
+        <h2>En qué consiste</h2>
+        {{{servicio_descripcion}}}
+        {{{servicio_bullets}}}
+      </div>
+      <aside>
+        <div class="tarjeta">
+          <h3>Antes de agendar</h3>
+          <p>Todos los tratamientos se realizan previa valoración y bajo indicación del profesional responsable. Tu plan de sesiones se define con base en criterios clínicos.</p>
+          <ul class="datos-contacto" style="margin-top:22px">
+            <li>{{{icono_reloj}}}<div><strong>Horario</strong><span>{{contacto_horario}}</span></div></li>
+            <li>{{{icono_pin}}}<div><strong>Dónde</strong><span>{{contacto_direccion_1}}<br>{{contacto_direccion_2}}</span></div></li>
+            <li>{{{icono_wa}}}<div><strong>WhatsApp</strong><a href="{{wa_url_servicio}}" target="_blank" rel="noopener">{{contacto_whatsapp_visible}}</a></div></li>
+          </ul>
+        </div>
+        <p class="aviso-tarifa">{{tarifario_vigencia}}. {{tarifario_nota}}</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion-niebla">
+  <div class="contenedor">
+    <div class="encabezado-seccion">
+      <span class="kicker">También en {{area_nombre}}</span>
+      <h2>Otros servicios de esta área</h2>
+    </div>
+    <table class="tabla-precios"><tbody>{{{relacionados}}}</tbody></table>
+  </div>
+</section>

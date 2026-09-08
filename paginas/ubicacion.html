@@ -1,0 +1,31 @@
+<header class="cabecera-pagina">
+  <div class="contenedor">
+    <span class="kicker">Ubicación y horarios</span>
+    <h1>Estamos en Coyoacán, sobre División del Norte</h1>
+    <p>{{contacto_direccion_1}} · {{contacto_direccion_2}}</p>
+  </div>
+</header>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="rejilla rejilla-2" style="gap:48px;align-items:start">
+      <div>
+        <h2>Cómo llegar</h2>
+        <ul class="datos-contacto" style="margin-top:24px">
+          <li>{{{icono_pin}}}<div><strong>Dirección</strong><span>{{contacto_direccion_1}}<br>{{contacto_direccion_2}}</span></div></li>
+          <li>{{{icono_reloj}}}<div><strong>Horario de atención</strong><span>{{contacto_horario}}</span></div></li>
+          <li>{{{icono_wa}}}<div><strong>WhatsApp</strong><a href="{{wa_url}}" target="_blank" rel="noopener">{{contacto_whatsapp_visible}}</a></div></li>
+          <li>{{{icono_correo}}}<div><strong>Correo</strong><a href="mailto:{{contacto_correo}}">{{contacto_correo}}</a></div></li>
+        </ul>
+        <div class="grupo-botones" style="margin-top:30px">
+          <a class="boton boton-azul" href="{{contacto_maps_url}}" target="_blank" rel="noopener">Abrir en Google Maps</a>
+          <a class="boton boton-primario" href="{{wa_url}}" target="_blank" rel="noopener">Agendar cita</a>
+        </div>
+        <p class="aviso-tarifa" style="margin-top:30px">Llega unos minutos antes de tu cita. Si necesitas reprogramar, avísanos con al menos 24 horas de anticipación.</p>
+      </div>
+      <div class="mapa" style="min-height:460px">
+        <iframe src="{{contacto_maps_embed}}" title="Ubicación de CRENEF en el mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen style="min-height:460px"></iframe>
+      </div>
+    </div>
+  </div>
+</section>

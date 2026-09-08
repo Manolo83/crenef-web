@@ -1,0 +1,11 @@
+node_modules/
+.env
+data/
+!data/.gitkeep
+*.log
+.DS_Store
+
+# Documentos internos de la clinica (el repositorio es publico).
+# La Guia interna de venta de paquetes NUNCA debe subirse aqui.
+*.pdf
+documentos-internos/
