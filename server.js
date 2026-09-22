@@ -15,6 +15,7 @@ const rutas = require('./src/rutas');
 const rutasPublicas = require('./src/routes/publico');
 const rutasApi = require('./src/routes/api');
 const rutasAdmin = require('./src/routes/admin');
+const rutasLeventSync = require('./src/routes/leventSync');
 
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 console.log(`[uploads] Los archivos subidos se guardan en: ${UPLOAD_DIR}`);
@@ -83,6 +84,17 @@ const limitarSolicitudes = rateLimit({
   message: { error: 'Recibimos varias solicitudes desde aquí. Espera unos minutos o escríbenos por WhatsApp.' },
 });
 app.use('/api/solicitudes', limitarSolicitudes);
+
+// Sincronizacion con la base de datos general de Levent: protegida por su
+// propio token y limitada, porque expone contactos aunque sean pocos campos.
+const limitarLeventSync = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Demasiadas peticiones de sincronizacion. Espera unos minutos.' },
+});
+app.use('/api/levent-sync', limitarLeventSync, rutasLeventSync);
 
 // Archivos subidos desde /admin (viven en el Volume, no en el repositorio).
 app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '30d' }));
