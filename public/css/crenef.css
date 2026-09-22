@@ -550,6 +550,8 @@ p:last-child { margin-bottom: 0; }
   color: rgba(255, 255, 255, .68);
   margin-bottom: 32px;
 }
+.pie-levent { display: inline-flex; align-items: center; gap: 6px; }
+.pie-levent img { width: 14px; height: 14px; }
 
 /* --- Boton flotante de WhatsApp ------------------------------------------ */
 
