@@ -18,7 +18,7 @@ const CONTENIDO = {
   hero_kicker: 'Rehabilitación pulmonar y fisioterapia · Coyoacán, CDMX',
   hero_titulo: 'Vuelve a respirar con libertad',
   hero_texto:
-    'En CRENEF unimos la neumología y la fisioterapia en un solo lugar para devolverte la capacidad de respirar, moverte y vivir plenamente. Te acompañamos en tu recuperación, paso a paso.',
+    'En CRENEF unimos la inhaloterapia y la fisioterapia en un solo lugar para devolverte la capacidad de respirar, moverte y vivir plenamente. Te acompañamos en tu recuperación, paso a paso.',
   hero_cta_principal: 'Agenda tu valoración',
   hero_cta_secundario: 'Ver servicios y precios',
 
@@ -64,7 +64,7 @@ const CONTENIDO = {
   nosotros_texto:
     'CRENEF — Clínica de Rehabilitación Neumofisio es un centro especializado en rehabilitación pulmonar y fisioterapia respiratoria. Unimos dos disciplinas en un solo propósito: devolver a cada paciente la capacidad de respirar, moverse y vivir plenamente.',
   nosotros_esencia:
-    'Nuestra identidad nace de una dualidad que se refleja en todo lo que hacemos: el rigor clínico de la neumología y la calidez humana de la fisioterapia. Precisión y cuidado, evidencia y acompañamiento.',
+    'Nuestra identidad nace de una dualidad que se refleja en todo lo que hacemos: el rigor clínico de la inhaloterapia y la calidez humana de la fisioterapia. Precisión y cuidado, evidencia y acompañamiento.',
 
   // --- Llamado final -----------------------------------------------------
   cta_titulo: '¿Empezamos?',
@@ -77,13 +77,17 @@ const CONTENIDO = {
   contacto_whatsapp_visible: '55 1812 3770',
   contacto_whatsapp_mensaje: 'Hola, me gustaría agendar una valoración en CRENEF.',
   contacto_telefono: '',
-  contacto_correo: 'contacto@crenef.mx',
+  contacto_correo: 'centrocrenef@gmail.com',
   contacto_direccion_1: 'Av. División del Norte 3651, Local 7',
   contacto_direccion_2: 'Col. San Pablo Tepetlapa, Coyoacán · C.P. 04620, CDMX',
   contacto_horario: 'Martes a domingo · 9:00 – 21:00 h',
   contacto_maps_url: 'https://www.google.com/maps/search/?api=1&query=Av.+Divisi%C3%B3n+del+Norte+3651+Local+7+San+Pablo+Tepetlapa+Coyoac%C3%A1n+CDMX',
   contacto_maps_embed:
     'https://www.google.com/maps?q=Av.%20Divisi%C3%B3n%20del%20Norte%203651%2C%20San%20Pablo%20Tepetlapa%2C%20Coyoac%C3%A1n%2C%20CDMX&output=embed',
+  // Enlace de la ficha de Google Business de la clinica. En cuanto exista se
+  // captura desde /admin y alimenta los campos hasMap y sameAs de los datos
+  // estructurados. Vacio = esos dos campos no se publican.
+  contacto_ficha_google: '',
   contacto_instagram: '',
   contacto_facebook: '',
 
@@ -122,7 +126,7 @@ const AREAS = [
     titulo: 'Inhaloterapia y rehabilitación pulmonar',
     resumen: 'Valoración, estudios y sesiones para mejorar tu capacidad respiratoria.',
     descripcion:
-      'El área neumológica de la clínica: valoración especializada, espirometría con interpretación, sesiones de rehabilitación pulmonar y micronebulizaciones. Aquí se evalúa cómo estás respirando y se define el plan para que respires mejor.',
+      'El área de inhaloterapia de la clínica: valoración especializada, espirometría con interpretación, sesiones de rehabilitación pulmonar y micronebulizaciones. Aquí se evalúa cómo estás respirando y se define el plan para que respires mejor.',
     color: 'azul',
   },
   {

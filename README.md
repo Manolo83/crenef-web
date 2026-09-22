@@ -74,6 +74,35 @@ el visitante y Google reciben el HTML completo desde la primera respuesta
 generado al vuelo, Open Graph y datos estructurados de tipo `MedicalClinic` y
 `FAQPage`.
 
+## La URL del sitio vive en un solo lugar
+
+`SITE_URL` (en `src/config.js`, y la variable del mismo nombre en Railway, que
+manda sobre el código) alimenta TODO: etiquetas canónicas, `og:url`,
+`og:image`, `twitter:image`, `robots.txt`, `sitemap.xml` y los datos
+estructurados. Mover el sitio de dominio es cambiar ese único valor.
+
+Mientras `crenef.mx` no esté activo debe apuntar al dominio de Railway: si
+apuntara a un dominio que todavía no existe, Google no podría indexar el sitio
+y las vistas previas al compartir el enlace saldrían rotas.
+
+**Al conectar el dominio**, cambia la variable `SITE_URL` en Railway a
+`https://www.crenef.mx`. No hace falta tocar código.
+
+## Corregir contenido que ya está publicado
+
+El sitio en producción lee de PostgreSQL; `src/datosIniciales.js` solo siembra
+la base la primera vez. Por eso una corrección de texto hecha en el código
+**no llega sola** al sitio que ya está arriba.
+
+Hay dos caminos:
+
+1. **Desde `/admin`**, que es lo normal para un cambio puntual.
+2. **Con una migración**, para correcciones que deben aplicarse sí o sí (una
+   regla de marca, un dato legal). Se agregan a `src/migraciones.js`: cada una
+   se aplica una sola vez al arrancar, queda anotada en el documento, y solo
+   actúa si el texto sigue como estaba mal — nunca pisa una edición hecha a
+   mano desde el panel.
+
 ## Precios y paquetes (importante)
 
 El sitio publica **solo los precios de servicios individuales** del Tarifario
@@ -135,7 +164,7 @@ que no hace falta instalar PostgreSQL para trabajar en local.
    | `SESSION_SECRET` | un texto aleatorio de 32+ caracteres |
    | `DATA_DIR` | `/data` |
    | `NODE_ENV` | `production` |
-   | `SITE_URL` | `https://www.crenef.mx` |
+   | `SITE_URL` | `https://crenef-web-production.up.railway.app` (cámbiala a `https://www.crenef.mx` el día que el dominio esté activo) |
 
    `DATABASE_URL` y `PORT` los pone Railway solo.
 

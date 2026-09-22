@@ -12,6 +12,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { DATA_DIR, UPLOAD_DIR } = require('./config');
 const iniciales = require('./datosIniciales');
+const migraciones = require('./migraciones');
 
 fs.mkdirSync(DATA_DIR, { recursive: true });
 fs.mkdirSync(UPLOAD_DIR, { recursive: true });
@@ -37,6 +38,8 @@ function documentoInicial() {
     testimonios: [],
     avisos: [],
     solicitudes: [],
+    // Ids de las correcciones de contenido ya aplicadas (src/migraciones.js).
+    migraciones: [],
     actualizado: new Date().toISOString(),
   };
 }
@@ -51,8 +54,13 @@ async function init() {
     if (rows.length) {
       datos = combinar(documentoInicial(), rows[0].datos);
       console.log('[store] Contenido cargado de PostgreSQL.');
-      if (migrarAvisoPrivacidadLevent()) await guardarAhora();
+      // Las dos se evaluan siempre: con || la segunda no correria cuando la
+      // primera devuelve true.
+      const cambioAviso = migrarAvisoPrivacidadLevent();
+      const cambioContenido = migraciones.aplicar(datos);
+      if (cambioAviso || cambioContenido) await guardarAhora();
     } else {
+      datos.migraciones = migraciones.MIGRACIONES.map((m) => m.id);
       await pool.query('INSERT INTO sitio (id, datos) VALUES (1, $1)', [JSON.stringify(datos)]);
       console.log('[store] Base vacia: se sembro el contenido inicial de CRENEF.');
     }
@@ -63,11 +71,16 @@ async function init() {
     try {
       datos = combinar(documentoInicial(), JSON.parse(fs.readFileSync(ARCHIVO, 'utf8')));
       console.log(`[store] Contenido cargado de ${ARCHIVO}.`);
-      if (migrarAvisoPrivacidadLevent()) await guardarAhora();
+      // Las dos se evaluan siempre: con || la segunda no correria cuando la
+      // primera devuelve true.
+      const cambioAviso = migrarAvisoPrivacidadLevent();
+      const cambioContenido = migraciones.aplicar(datos);
+      if (cambioAviso || cambioContenido) await guardarAhora();
     } catch (e) {
       console.error('[store] El archivo de datos esta danado, se usa el contenido inicial:', e.message);
     }
   } else {
+    datos.migraciones = migraciones.MIGRACIONES.map((m) => m.id);
     guardarAhora();
     console.log(`[store] Sin DATABASE_URL: el contenido se guarda en ${ARCHIVO}.`);
   }
@@ -146,6 +159,8 @@ const getEquipo = () => datos.equipo.slice();
 const getTestimonios = () => datos.testimonios.filter((t) => t.publicado !== false);
 const getAvisos = () => datos.avisos.filter((a) => a.publicado !== false);
 const getSolicitudes = () => datos.solicitudes.slice().reverse();
+// Fecha de la ultima edicion de contenido. La usa el sitemap como <lastmod>.
+const getActualizado = () => datos.actualizado || new Date().toISOString();
 
 // --- Escrituras ----------------------------------------------------------
 
@@ -253,6 +268,7 @@ module.exports = {
   getTestimonios,
   getAvisos,
   getSolicitudes,
+  getActualizado,
   getColeccion,
   guardarItem,
   borrarItem,

@@ -11,6 +11,7 @@ const rateLimit = require('express-rate-limit');
 const { UPLOAD_DIR, SITE_URL, EN_PRODUCCION } = require('./src/config');
 const store = require('./src/store');
 const { render } = require('./src/render');
+const rutas = require('./src/rutas');
 const rutasPublicas = require('./src/routes/publico');
 const rutasApi = require('./src/routes/api');
 const rutasAdmin = require('./src/routes/admin');
@@ -107,25 +108,34 @@ app.use('/admin', rutasAdmin);
 app.get('/healthz', (req, res) => res.status(200).send('ok'));
 
 app.get('/robots.txt', (req, res) => {
-  res.type('text/plain').send(`User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+  const bloqueadas = rutas.NO_INDEXABLES.map((r) => `Disallow: ${r}`).join('\n');
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.type('text/plain').send(`User-agent: *\nAllow: /\n\n${bloqueadas}\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 });
 
-// El sitemap se arma en cada solicitud, asi que nunca se queda sin los
-// servicios que se agreguen desde /admin.
+// El sitemap se arma en cada solicitud a partir de src/rutas.js y de los
+// servicios que existen en la base, asi que nunca se queda desincronizado
+// cuando se agrega o se borra un servicio desde /admin.
 app.get('/sitemap.xml', (req, res) => {
+  // lastmod real: la ultima vez que se edito contenido desde el panel.
+  const lastmod = new Date(store.getActualizado()).toISOString().slice(0, 10);
+
   const paginas = [
-    { loc: '/', prioridad: '1.0', frecuencia: 'weekly' },
-    { loc: '/servicios', prioridad: '0.9', frecuencia: 'weekly' },
-    { loc: '/nosotros', prioridad: '0.7', frecuencia: 'monthly' },
-    { loc: '/preguntas-frecuentes', prioridad: '0.7', frecuencia: 'monthly' },
-    { loc: '/ubicacion', prioridad: '0.7', frecuencia: 'monthly' },
-    { loc: '/contacto', prioridad: '0.8', frecuencia: 'monthly' },
-    { loc: '/aviso-de-privacidad', prioridad: '0.3', frecuencia: 'yearly' },
-    ...store.getServicios().map((s) => ({ loc: `/servicios/${s.slug}`, prioridad: '0.8', frecuencia: 'monthly' })),
+    ...rutas.PAGINAS,
+    ...store.getServicios().map((s) => ({
+      ruta: `/servicios/${s.slug}`,
+      prioridad: rutas.PRIORIDAD_POR_SERVICIO[s.slug] || rutas.PRIORIDAD_SERVICIO_POR_DEFECTO,
+      frecuencia: 'monthly',
+    })),
   ];
+
   const urls = paginas
-    .map(({ loc, prioridad, frecuencia }) => `\n  <url>\n    <loc>${SITE_URL}${loc}</loc>\n    <changefreq>${frecuencia}</changefreq>\n    <priority>${prioridad}</priority>\n  </url>`)
+    .map(
+      ({ ruta, prioridad, frecuencia }) =>
+        `\n  <url>\n    <loc>${SITE_URL}${ruta}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${frecuencia}</changefreq>\n    <priority>${prioridad}</priority>\n  </url>`
+    )
     .join('');
+
   res.set('Content-Type', 'application/xml');
   res.set('Cache-Control', 'public, max-age=3600');
   res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}\n</urlset>`);

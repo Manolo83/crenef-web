@@ -2,7 +2,7 @@
 // preguntas, valores...) y se inyectan en las paginas con {{{marcador}}}.
 
 const store = require('./store');
-const { escapar, precio, urlWhatsApp } = require('./render');
+const { escapar, precio, urlWhatsApp, etiquetaJsonLd } = require('./render');
 
 const { icono } = require('./iconos');
 
@@ -135,10 +135,14 @@ function opcionesServicio(slugElegido) {
     .join('\n');
 }
 
-// Preguntas frecuentes en JSON-LD: son las que Google puede mostrar
-// desplegadas en los resultados de busqueda.
+// Preguntas frecuentes en JSON-LD (FAQPage). Se genera desde el MISMO arreglo
+// que pinta el acordeon, asi que la respuesta marcada y la que lee el visitante
+// nunca pueden diferir: si difirieran, Google descarta el marcado.
+//
+// Va UNICAMENTE en /preguntas-frecuentes. Ponerlo en otras paginas (por
+// ejemplo en la portada, que muestra solo cinco) incumple las guias de Google.
 function faqsEstructuradas() {
-  const ficha = {
+  return etiquetaJsonLd({
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: store.getFaqs().map((f) => ({
@@ -146,14 +150,10 @@ function faqsEstructuradas() {
       name: f.pregunta,
       acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
     })),
-  };
-  return `<script type="application/ld+json">${JSON.stringify(ficha).replace(/</g, '\\u003c')}</script>`;
+  });
 }
 
-// Formulario de agenda. Es el paso previo obligatorio antes de WhatsApp: con
-// estas respuestas la clinica ya sabe que necesita la persona cuando abre el
-// chat, y la solicitud queda guardada en /admin aunque nunca llegue a enviar
-// el mensaje.
+
 const OPCIONES = {
   para_quien: ['Para mí', 'Para un familiar o alguien a mi cargo'],
   desde_cuando: ['Menos de una semana', 'Entre una semana y un mes', 'Entre uno y seis meses', 'Más de seis meses', 'Es una revisión o control'],

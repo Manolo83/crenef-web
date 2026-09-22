@@ -109,7 +109,7 @@
     { titulo: 'A quién acompañamos', claves: ['padecimientos_kicker', 'padecimientos_titulo', 'padecimientos_texto'] },
     { titulo: 'Sobre la clínica', claves: ['nosotros_kicker', 'nosotros_titulo', 'nosotros_texto', 'nosotros_esencia', 'marca_lema'] },
     { titulo: 'Llamado final', claves: ['cta_titulo', 'cta_texto', 'cta_boton'] },
-    { titulo: 'Contacto', claves: ['contacto_whatsapp', 'contacto_whatsapp_visible', 'contacto_whatsapp_mensaje', 'contacto_correo', 'contacto_telefono', 'contacto_direccion_1', 'contacto_direccion_2', 'contacto_horario', 'contacto_maps_url', 'contacto_maps_embed', 'contacto_instagram', 'contacto_facebook'] },
+    { titulo: 'Contacto', claves: ['contacto_whatsapp', 'contacto_whatsapp_visible', 'contacto_whatsapp_mensaje', 'contacto_correo', 'contacto_telefono', 'contacto_direccion_1', 'contacto_direccion_2', 'contacto_horario', 'contacto_maps_url', 'contacto_maps_embed', 'contacto_ficha_google', 'contacto_instagram', 'contacto_facebook'] },
     { titulo: 'Tarifario', claves: ['tarifario_vigencia', 'tarifario_nota'] },
     { titulo: 'Legales y pie de página', claves: ['pie_texto', 'legal_aviso_medico', 'legal_aviso_privacidad', 'legal_responsable_datos', 'legal_responsable_sanitario', 'legal_cedula_responsable'] },
   ];
@@ -127,6 +127,7 @@
     contacto_whatsapp_mensaje: 'Mensaje con el que abre el chat', contacto_correo: 'Correo', contacto_telefono: 'Teléfono fijo (opcional)',
     contacto_direccion_1: 'Dirección, línea 1', contacto_direccion_2: 'Dirección, línea 2', contacto_horario: 'Horario',
     contacto_maps_url: 'Enlace de Google Maps', contacto_maps_embed: 'Enlace del mapa incrustado',
+    contacto_ficha_google: 'Enlace de la ficha de Google Business (para datos estructurados)',
     contacto_instagram: 'Instagram (opcional)', contacto_facebook: 'Facebook (opcional)',
     tarifario_vigencia: 'Vigencia del tarifario', tarifario_nota: 'Nota al pie del tarifario',
     pie_texto: 'Descripción del pie', legal_aviso_medico: 'Aviso médico',

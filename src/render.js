@@ -119,7 +119,7 @@ function render(pagina, opciones = {}) {
     medicion: medicion(),
     menu_escritorio: menu(ruta, 'nav-enlace'),
     menu_movil: menu(ruta, 'menu-movil-enlace'),
-    datos_estructurados: datosEstructurados(contenido),
+    datos_estructurados: [datosEstructurados(contenido), ...(opciones.jsonLd || [])].join('\n'),
     // Enlaces e iconos que usan la plantilla comun y varias paginas.
     pie_servicios: store
       .getAreas()
@@ -135,18 +135,36 @@ function render(pagina, opciones = {}) {
   return sustituir(leer('_documento'), { ...base, contenido_pagina: cuerpo });
 }
 
-// JSON-LD de negocio local: le dice a Google que esto es una clinica, donde
-// esta y a que hora abre, para las fichas de busqueda y Maps.
+// JSON-LD de la clinica (MedicalClinic). Va en TODAS las paginas: le dice a
+// Google que esto es una clinica, donde esta, a que hora abre y que servicios
+// ofrece, que es lo que alimenta la ficha de busqueda y la de Maps.
+//
+// Nota de marca: la especialidad se declara como RespiratoryTherapy
+// (inhaloterapia) y Physiotherapy, no como Pulmonary/neumologia: la clinica no
+// ofrece consulta de neumologia. Ambos son valores validos del vocabulario
+// MedicalSpecialty de schema.org.
+const COORDENADAS = { latitud: 19.3208826, longitud: -99.1393025 };
+
 function datosEstructurados(contenido) {
+  const servicio = (tipo, nombre, slug) => ({
+    '@type': tipo,
+    name: nombre,
+    url: `${SITE_URL}/servicios/${slug}`,
+  });
+
   const ficha = {
     '@context': 'https://schema.org',
     '@type': 'MedicalClinic',
-    name: 'CRENEF · Clínica de Rehabilitación Neumofisio',
-    description: 'Clínica especializada en rehabilitación pulmonar y fisioterapia respiratoria.',
+    '@id': `${SITE_URL}/#clinica`,
+    name: 'CRENEF - Clínica de Rehabilitación Neumofisio',
+    alternateName: 'CRENEF',
     url: `${SITE_URL}/`,
+    logo: `${SITE_URL}/img/isotipo-crenef.png`,
     image: `${SITE_URL}/img/og-image.png`,
-    logo: `${SITE_URL}/img/logo-crenef.png`,
-    medicalSpecialty: ['Pulmonary', 'PhysicalTherapy'],
+    description:
+      'Clínica especializada en rehabilitación pulmonar, inhaloterapia y fisioterapia en Coyoacán, Ciudad de México. Atención de martes a domingo de 9:00 a 21:00 h.',
+    priceRange: '$$',
+    currenciesAccepted: 'MXN',
     address: {
       '@type': 'PostalAddress',
       streetAddress: contenido.contacto_direccion_1,
@@ -154,6 +172,11 @@ function datosEstructurados(contenido) {
       addressRegion: 'Ciudad de México',
       postalCode: '04620',
       addressCountry: 'MX',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: COORDENADAS.latitud,
+      longitude: COORDENADAS.longitud,
     },
     openingHoursSpecification: [
       {
@@ -163,11 +186,43 @@ function datosEstructurados(contenido) {
         closes: '21:00',
       },
     ],
+    areaServed: { '@type': 'City', name: 'Ciudad de México' },
+    medicalSpecialty: ['RespiratoryTherapy', 'Physiotherapy'],
+    availableService: [
+      servicio('MedicalTherapy', 'Rehabilitación pulmonar', 'rehabilitacion-pulmonar'),
+      servicio('MedicalTherapy', 'Inhaloterapia y micronebulizaciones', 'micronebulizacion-con-medicamento'),
+      servicio('MedicalTest', 'Espirometría', 'espirometria'),
+      servicio('PhysicalTherapy', 'Terapia física individualizada', 'terapia-fisica-individualizada'),
+      servicio('PhysicalTherapy', 'Descarga muscular', 'descarga-muscular'),
+    ],
   };
+
   const tel = String(contenido.contacto_whatsapp || '').replace(/\D/g, '');
-  if (tel) ficha.telephone = `+52${tel}`;
+  if (tel) {
+    ficha.telephone = `+52${tel}`;
+    ficha.potentialAction = {
+      '@type': 'CommunicateAction',
+      name: 'Agendar cita por WhatsApp',
+      target: `https://wa.me/52${tel}`,
+    };
+  }
   if (contenido.contacto_correo) ficha.email = contenido.contacto_correo;
-  return `<script type="application/ld+json">${JSON.stringify(ficha).replace(/</g, '\\u003c')}</script>`;
+
+  // Enlace de la ficha de Google Business. Se captura en /admin > Textos del
+  // sitio > Contacto, sin tocar codigo. Mientras este vacio se omiten los dos
+  // campos: publicar un texto de relleno en su lugar invalidaria el marcado.
+  const ficha_google = String(contenido.contacto_ficha_google || '').trim();
+  if (ficha_google) {
+    ficha.hasMap = ficha_google;
+    ficha.sameAs = [ficha_google];
+  }
+
+  return etiquetaJsonLd(ficha);
 }
 
-module.exports = { render, escapar, escaparConSaltos, parrafos, precio, urlWhatsApp, NAV, DIR_PAGINAS };
+// Serializa un objeto como <script type="application/ld+json">, escapando el
+// "<" para que un texto del panel no pueda cerrar la etiqueta.
+const etiquetaJsonLd = (objeto) =>
+  `<script type="application/ld+json">${JSON.stringify(objeto).replace(/</g, '\\u003c')}</script>`;
+
+module.exports = { render, etiquetaJsonLd, escapar, escaparConSaltos, parrafos, precio, urlWhatsApp, NAV, DIR_PAGINAS };

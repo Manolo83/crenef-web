@@ -132,10 +132,10 @@ router.get('/preguntas-frecuentes', (req, res) => {
           '¿Necesito cita? ¿Cuánto cuesta la valoración? ¿La espirometría duele? Respuestas a las dudas más comunes sobre la atención en CRENEF.',
         ruta: '/preguntas-frecuentes',
       },
-      bloques: {
-        faqs: bloques.acordeonFaqs(),
-        datos_estructurados: bloques.faqsEstructuradas(),
-      },
+      // El FAQPage se suma al MedicalClinic de la plantilla, no lo sustituye,
+      // y solo en esta pagina.
+      jsonLd: [bloques.faqsEstructuradas()],
+      bloques: { faqs: bloques.acordeonFaqs() },
     })
   );
 });
