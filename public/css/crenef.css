@@ -158,10 +158,10 @@ p:last-child { margin-bottom: 0; }
   gap: 20px;
 }
 .marca-grupo { display: flex; align-items: center; gap: 14px; flex: none; }
-.marca-divisor { width: 1px; height: 28px; background: rgba(22, 53, 95, .15); }
+.marca-divisor { width: 1px; height: 32px; background: rgba(22, 53, 95, .15); }
 .marca-levent { display: flex; align-items: center; opacity: .7; transition: opacity .2s ease; }
 .marca-levent:hover { opacity: 1; }
-.marca-levent img { height: 26px; width: auto; }
+.marca-levent img { height: 34px; width: 34px; }
 .marca { display: flex; align-items: center; gap: 11px; flex: none; }
 .marca img { height: 42px; width: auto; }
 .marca-texto { display: flex; flex-direction: column; line-height: 1.05; }
