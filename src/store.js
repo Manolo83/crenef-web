@@ -51,6 +51,7 @@ async function init() {
     if (rows.length) {
       datos = combinar(documentoInicial(), rows[0].datos);
       console.log('[store] Contenido cargado de PostgreSQL.');
+      if (migrarAvisoPrivacidadLevent()) await guardarAhora();
     } else {
       await pool.query('INSERT INTO sitio (id, datos) VALUES (1, $1)', [JSON.stringify(datos)]);
       console.log('[store] Base vacia: se sembro el contenido inicial de CRENEF.');
@@ -62,6 +63,7 @@ async function init() {
     try {
       datos = combinar(documentoInicial(), JSON.parse(fs.readFileSync(ARCHIVO, 'utf8')));
       console.log(`[store] Contenido cargado de ${ARCHIVO}.`);
+      if (migrarAvisoPrivacidadLevent()) await guardarAhora();
     } catch (e) {
       console.error('[store] El archivo de datos esta danado, se usa el contenido inicial:', e.message);
     }
@@ -69,6 +71,22 @@ async function init() {
     guardarAhora();
     console.log(`[store] Sin DATABASE_URL: el contenido se guarda en ${ARCHIVO}.`);
   }
+}
+
+// Actualiza el aviso de privacidad ya guardado para que diga que los datos
+// de CONTACTO (nunca los clinicos) pueden compartirse con las demas marcas
+// del grupo Levent para marketing. Solo lo toca si el texto sigue igual al
+// anterior por defecto (si el admin ya lo edito a mano, se respeta tal
+// cual). Corre una sola vez, marcado por datos._migAvisoPrivacidadLevent.
+function migrarAvisoPrivacidadLevent() {
+  if (datos._migAvisoPrivacidadLevent) return false;
+  const textoViejo =
+    'CRENEF — Clínica de Rehabilitación Neumofisio, con domicilio en Av. División del Norte 3651, Local 7, Col. San Pablo Tepetlapa, Coyoacán, C.P. 04620, Ciudad de México, es responsable del tratamiento de tus datos personales. Responsable de datos personales: Ángel Carrillo Linares.\n\nQué datos recabamos. Nombre, teléfono, correo electrónico y el motivo de consulta que nos compartes al solicitar una cita. En la clínica, y solo cuando el tratamiento lo requiere, se recaban además datos de salud, que son datos personales sensibles.\n\nPara qué los usamos. Para agendar y confirmar tus citas, darte seguimiento clínico, integrar tu expediente y responder tus dudas. No vendemos ni compartimos tus datos con terceros ajenos a estos fines.\n\nTus derechos ARCO. Puedes acceder, rectificar, cancelar u oponerte al uso de tus datos, así como revocar tu consentimiento, escribiendo a nuestro WhatsApp o al correo de contacto. El aviso de privacidad integral está disponible en recepción.';
+  if (datos.contenido.legal_aviso_privacidad === textoViejo) {
+    datos.contenido.legal_aviso_privacidad = iniciales.CONTENIDO.legal_aviso_privacidad;
+  }
+  datos._migAvisoPrivacidadLevent = true;
+  return true;
 }
 
 // Une lo guardado sobre la estructura inicial, para que al agregar una seccion
