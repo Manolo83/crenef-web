@@ -36,6 +36,24 @@ const MIGRACIONES = [
       if (valoracion && Number(valoracion.precio) === 874) valoracion.precio = 875;
     },
   },
+  {
+    id: '2026-09-24-cookies-en-aviso-de-privacidad',
+    descripcion:
+      'El sitio carga Google Analytics, Google Ads y el pixel de Meta; el aviso de privacidad tiene que declararlo.',
+    aplicar(datos) {
+      const c = datos.contenido;
+      const cookies =
+        'Cookies y estadísticas del sitio. Este sitio usa cookies de Google Analytics, Google Ads y Meta para saber cuántas personas nos visitan, desde qué anuncio llegaron y qué páginas les resultan útiles. Estas herramientas registran únicamente el uso del sitio —páginas vistas y si pulsaste un botón para escribirnos—, nunca tu nombre, tu teléfono, tu correo ni el motivo de consulta que escribes en el formulario. Puedes bloquear las cookies desde la configuración de tu navegador sin que eso te impida agendar una cita.';
+      // Solo si todavia no lo menciona: si alguien ya redacto su propio
+      // parrafo de cookies desde /admin, se respeta.
+      if (typeof c.legal_aviso_privacidad === 'string' && !c.legal_aviso_privacidad.includes('Cookies')) {
+        c.legal_aviso_privacidad = c.legal_aviso_privacidad.replace(
+          '\n\nTus derechos ARCO.',
+          `\n\n${cookies}\n\nTus derechos ARCO.`
+        );
+      }
+    },
+  },
 ];
 
 function reemplazarEn(contenido, clave, viejo, nuevo) {

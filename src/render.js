@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { SITE_URL, GA_ID, GOOGLE_ADS_ID, META_PIXEL_ID, EN_PRODUCCION } = require('./config');
+const { SITE_URL, GA_ID, GOOGLE_ADS_ID, GOOGLE_ADS_CONVERSION_CONTACTO, META_PIXEL_ID, EN_PRODUCCION } = require('./config');
 const store = require('./store');
 const { icono } = require('./iconos');
 
@@ -63,6 +63,14 @@ function medicion() {
 ${GA_ID ? '' : '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}</script>'}
 <script async src="https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}"></script>
 <script>gtag('js',new Date());gtag('config','${GOOGLE_ADS_ID}');</script>`;
+    // Etiqueta de la accion de conversion "contacto por WhatsApp", que
+    // crenef.js dispara cuando alguien abre de verdad el chat. Sin esta
+    // variable Google Ads no recibe ninguna conversion y no puede optimizar:
+    // solo veria clics. Se copia de Google Ads > Objetivos > Conversiones,
+    // en la forma AW-000000000/AbCdEfGhIjK.
+    if (GOOGLE_ADS_CONVERSION_CONTACTO) {
+      html += `\n<script>window.CRENEF_ADS_CONVERSION=${JSON.stringify(GOOGLE_ADS_CONVERSION_CONTACTO)};</script>`;
+    }
   }
   if (META_PIXEL_ID) {
     html += `\n<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${META_PIXEL_ID}');fbq('track','PageView');</script>

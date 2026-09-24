@@ -2,6 +2,52 @@
 (function () {
   'use strict';
 
+  // --- Medicion ----------------------------------------------------------
+  //
+  // Tres momentos, de mayor a menor volumen:
+  //
+  //   agenda_iniciada     pulso un boton de "Agendar" (intencion)
+  //   generate_lead       lleno y envio el formulario
+  //   contacto_whatsapp   abrio de verdad el chat  <- LA CONVERSION
+  //
+  // Solo el tercero se manda a Google Ads: es el fondo del embudo y lo unico
+  // que vale la pena optimizar. Los otros dos quedan en GA4 para ver donde se
+  // cae la gente.
+  //
+  // NUNCA se manda nombre, telefono, correo ni el motivo de consulta. Es un
+  // sitio de salud: a la analitica solo va el hecho de que ocurrio y de que
+  // boton vino.
+
+  function medir(evento, origen) {
+    var datos = origen ? { origen: origen } : {};
+    try { if (window.gtag) window.gtag('event', evento, datos); } catch (e) {}
+  }
+
+  // Conversion de Google Ads. Se dispara una sola vez por visita: si alguien
+  // vuelve al formulario y abre WhatsApp otra vez, sigue siendo el mismo
+  // paciente y contarlo dos veces inflaria el reporte.
+  var yaConvirtio = false;
+  function conversionContacto(origen) {
+    medir('contacto_whatsapp', origen);
+    try { if (window.fbq) window.fbq('track', 'Contact'); } catch (e) {}
+    if (yaConvirtio) return;
+    yaConvirtio = true;
+    try {
+      if (window.gtag && window.CRENEF_ADS_CONVERSION) {
+        window.gtag('event', 'conversion', { send_to: window.CRENEF_ADS_CONVERSION });
+      }
+    } catch (e) {}
+  }
+
+  // Botones de "Agendar" repartidos por el sitio. Todos llevan a /agenda, asi
+  // que esto mide intencion, no contacto. El listener va delegado en el
+  // documento para que tambien alcance a los botones del menu movil.
+  document.addEventListener('click', function (e) {
+    var destino = e.target && e.target.closest && e.target.closest('[data-evento]');
+    if (!destino) return;
+    medir('agenda_iniciada', destino.getAttribute('data-evento'));
+  }, true);
+
   // --- Menu movil --------------------------------------------------------
   var boton = document.getElementById('boton-menu');
   var menu = document.getElementById('menu-movil');
@@ -57,8 +103,8 @@
       .then(function (res) {
         if (!res.ok) throw new Error(res.cuerpo.error || 'No se pudo enviar la solicitud.');
 
-        if (window.gtag) window.gtag('event', 'generate_lead', { method: 'formulario de agenda' });
-        if (window.fbq) window.fbq('track', 'Lead');
+        medir('generate_lead', 'formulario de agenda');
+        try { if (window.fbq) window.fbq('track', 'Lead'); } catch (err) {}
 
         var wa = res.cuerpo.waUrl;
         var id = res.cuerpo.id;
@@ -67,7 +113,10 @@
         // Avisa al servidor que esta persona si llego al chat. Se usa
         // sendBeacon porque el navegador esta a punto de salir de la pagina:
         // un fetch normal se cancelaria a medio camino.
-        function marcarQueAbrioWhatsApp() {
+        function marcarQueAbrioWhatsApp(origen) {
+          // La conversion va primero y es sincrona: el navegador esta a punto
+          // de irse a WhatsApp y un evento encolado despues se pierde.
+          conversionContacto(typeof origen === 'string' ? origen : 'automatico');
           if (!id) return;
           try {
             if (navigator.sendBeacon) navigator.sendBeacon('/api/solicitudes/' + id + '/whatsapp');
@@ -92,7 +141,7 @@
             enlace.href = wa;
             enlace.className = 'boton boton-primario';
             enlace.textContent = 'Abrir WhatsApp y enviar';
-            enlace.addEventListener('click', marcarQueAbrioWhatsApp);
+            enlace.addEventListener('click', function () { marcarQueAbrioWhatsApp('boton'); });
             aviso.appendChild(enlace);
             var nota = document.createElement('span');
             nota.className = 'ayuda';
@@ -106,7 +155,7 @@
         // forma confiable en celular, sin que el navegador lo bloquee por
         // venir de una respuesta asincrona.
         if (wa) setTimeout(function () {
-          marcarQueAbrioWhatsApp();
+          marcarQueAbrioWhatsApp('automatico');
           window.location.href = wa;
         }, 1200);
       })
